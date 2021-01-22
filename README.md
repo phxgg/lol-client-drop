@@ -1,5 +1,7 @@
 # lol-client-drop #
 
+*Under construction*
+
 This is referring to people who know what they're doing.
 I won't bother explaining every single step you have to take to make this script work.
 
