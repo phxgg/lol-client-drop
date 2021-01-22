@@ -11,7 +11,13 @@ I won't bother explaining every single step you have to take to make this script
     * Run League of Legends with this argument: `--allow-multiple-clients`
 
 * <b>MacOS:</b>
-    * TODO: Use AppleScript
+    * Use `open -n "run-league.app"` to start a new client (check `bin` folder).
+
+The `run-league.app` is a simple AppleScript application used to send the `--allow-multiple-clients` argument
+to the client executable. You can compile your own using the following code:
+```
+do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClient.app/Contents/MacOS/LeagueClient --allow-multiple-clients & killall League\\ of\\ Legends.app"
+```
 
 ## Get port & auth token
 
@@ -22,4 +28,4 @@ I won't bother explaining every single step you have to take to make this script
 
 * <b>MacOS:</b>
     * TODO: Create simple debugger for MacOS
-    * or use `ps -A | grep LeagueClientUx` to get app port & auth token
+    * For now, use `ps -A | grep LeagueClientUx` to get app port & auth token
