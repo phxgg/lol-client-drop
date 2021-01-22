@@ -30,6 +30,12 @@ do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClie
     * TODO: Create simple debugger for MacOS
     * For now, use `ps -A | grep LeagueClientUx` to get app port & auth token
 
+# ToDo:
+
+* Re-work the script using an LCU driver so we don't have to manually grab the app port & auth token for each account.<br>
+A nice project that could be used is this one https://github.com/sousa-andre/lcu-driver but for the 5 minutes I checked,
+it does not support multiple clients. I can work this around and add support for multiple clients but too bored right now lol.
+
 ## Disclaimer
 
 This is made public for education purposes only. You are solely responsible for all activities that occur by using this script.
