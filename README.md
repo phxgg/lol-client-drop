@@ -22,3 +22,4 @@ I won't bother explaining every single step you have to take to make this script
 
 * <b>MacOS:</b>
     * TODO: Create simple debugger for MacOS
+    * or use `ps -A | grep LeagueClientUx` to get app port & auth token
