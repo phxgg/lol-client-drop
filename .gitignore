@@ -1,3 +1,4 @@
 info/
 .DS_Store
 test.py
+.vscode
