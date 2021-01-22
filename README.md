@@ -19,7 +19,7 @@ to the client executable. You can compile your own using the following code:
 do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClient.app/Contents/MacOS/LeagueClient --allow-multiple-clients & killall League\\ of\\ Legends.app"
 ```
 
-## Get port & auth token
+## Get app port & auth token
 
 * <b>Windows:</b>
     * Place `SimpleDebugger.exe` inside your League of Legends folder (where `LeagueClient.exe` is located).
