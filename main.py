@@ -4,14 +4,15 @@ import json
 from time import sleep
 from selenium import webdriver
 from datetime import datetime
-from lcu_driver import Connector
 import psutil
+#from lcu_driver import Connector
 import threading
 import base64
 
 # TODO: use lcu_driver
 
-# fill in as 'app-port' -> 'auth_token'
+# fill in with this format:
+# 'app_port': 'auth_token',
 auths = {
     '51789': 'auth token 1', # account1
     '51935': 'auth token 2', # account2

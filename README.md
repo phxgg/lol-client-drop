@@ -5,6 +5,12 @@
 This is referring to people who know what they're doing.
 I won't bother explaining every single step you have to take to make this script work.
 
+## What this is
+
+So what this script actually does is spam invites to an account with multiple clients of yours.<br>
+The result is making the victim's client completely unresponsive.<br>
+This shit will literally not stop until you cancel the attack.
+
 ## Run multiple clients
 
 * <b>Windows:</b>
@@ -19,11 +25,16 @@ to the client executable. You can compile your own using the following code:
 do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClient.app/Contents/MacOS/LeagueClient --allow-multiple-clients & killall League\\ of\\ Legends.app"
 ```
 
-## Get app port & auth token
+## Installation & Usage
+
+1. Install requirements with `pip install -r requirements.txt`
+2. You have to import your LeagueClient app port & auth token in `main.py` for each account you have logged into (see `auths` variable in `main.py`).
+
+### How to get app port & auth token
 
 * <b>Windows:</b>
-    * Place `SimpleDebugger.exe` inside your League of Legends folder (where `LeagueClient.exe` is located).
-    * Start SimpleDebugger and press `enter` to hook the client, then exit.
+    1. Place `SimpleDebugger.exe` inside your League of Legends folder (where `LeagueClient.exe` is located).
+    2. Start SimpleDebugger and press `enter` to hook the client, then exit.
     * Now each time you start your League Client, the SimpleDebugger process will pop up and show you useful info.
 
 * <b>MacOS:</b>
