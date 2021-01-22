@@ -29,3 +29,7 @@ do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClie
 * <b>MacOS:</b>
     * TODO: Create simple debugger for MacOS
     * For now, use `ps -A | grep LeagueClientUx` to get app port & auth token
+
+## Disclaimer
+
+This is made public for education purposes only. You are solely responsible for all activities that occur by using this script.
