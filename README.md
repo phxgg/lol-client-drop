@@ -35,6 +35,9 @@ do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClie
 ```
 Where `runleague.app` is whatever you have named the script + .app
 
+<b><u>Please note:</u></b> For macOS users, you must open whatever number of clients you want <b>before</b> logging in to any account.
+When you login to any account you won't be able to start a new client.
+
 # Installation & Usage
 
 1. Install requirements with `pip install -r requirements.txt`
@@ -44,8 +47,6 @@ Where `MAINFILE.py` is the main python file depending on your platform. For wind
 For example: `python main_mac.py "Kwsfour" "eune"`
 
 <b>Available regions:</b> `eune`, `euw`, `na`
-
-<b><u>Please note:</u></b> You must open whatever number of clients you want <b>before</b> logging in to any account.
 
 ### How to get app port & auth token
 
