@@ -19,7 +19,7 @@ This shit will literally not stop until you cancel the attack.
 * <b>macOS:</b>
     * Run `runleague.app` (see `bins` folder).
 
-## What is `runleague.app`
+### What is `runleague.app`
 The `runleague.app` is a simple AppleScript application used to send the `--allow-multiple-clients` argument
 to the client executable. You can compile your own using the following code:
 ```
@@ -27,7 +27,7 @@ do shell script "open -a /Applications/League\\ of\\ Legends.app --args --allow-
 ```
 <b>Save it as an application</b>
 
-## Older verions of macOS
+### Older verions of macOS
 
 For older versions of macOS, you might need to use this code instead:
 ```
