@@ -40,8 +40,15 @@ When you login to any account you won't be able to start a new client.
 
 # Installation & Usage
 
-1. Install requirements with `pip install -r requirements.txt`
-2. Run `python MAINFILE.py "Summoner Name" "Region"`<br>
+### Setup
+
+1. Create accounts on the same region as your victim (3 accounts should be quite powerful).
+2. Skip the tutorial on each one of your accounts, so when you login you can see the client home page.
+3. Install requirements with `pip install -r requirements.txt`
+
+### Usage
+
+* Run `python MAINFILE.py "Summoner Name" "Region"`<br>
 Where `MAINFILE.py` is the main python file depending on your platform. For windows you should use `main_win.py`, and for macOS `main_mac.py`.
 
 For example: `python main_mac.py "Kwsfour" "eune"`
