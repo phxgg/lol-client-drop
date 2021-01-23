@@ -7,9 +7,10 @@ I won't bother explaining every single step you have to take to make this script
 
 # What this is
 
-So what this script actually does is spam invites to an account with multiple clients of yours.<br>
+Apparently you can crash someone else's client by flooding it with invites.<br>
 The result is making the victim's client completely unresponsive.<br>
-This shit will literally not stop until you cancel the attack.
+This shit will literally not stop until you cancel the attack.<br>
+<b>Not affected</b> by the "allow invites only from friends" option (cuz why not?? riot?)
 
 # Installation & Usage
 
