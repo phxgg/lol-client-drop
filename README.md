@@ -29,6 +29,33 @@ For example: `python main_mac.py "Kwsfour" "eune"`
 
 <b>Available regions:</b> `eune`, `euw`, `na`
 
+# Run multiple clients
+
+* <b>Windows:</b>
+    * Run League of Legends with this argument: `--allow-multiple-clients`
+
+* <b>macOS:</b>
+    * Run `runleague.app` (see `bin` folder).
+
+### What is `runleague.app`
+The `runleague.app` is a simple AppleScript application used to send the `--allow-multiple-clients` argument
+to the client executable. You can compile your own using the following code:
+```
+do shell script "open -a /Applications/League\\ of\\ Legends.app --args --allow-multiple-clients"
+```
+<b>Save it as an application</b>
+
+### Older verions of macOS
+
+For older versions of macOS, you might need to use this code instead:
+```
+do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClient.app/Contents/MacOS/LeagueClient --allow-multiple-clients & killall runleague.app"
+```
+Where `runleague.app` is whatever you have named the script + .app
+
+<b><u>Please note:</u></b> For macOS users, you must open whatever number of clients you want <b>before</b> logging in to any account.
+When you login to any account you won't be able to start a new client.
+
 # Disclaimer
 
 This is made public for education purposes only. You are solely responsible for all activities that occur by using this script.
