@@ -55,16 +55,6 @@ For example: `python main_mac.py "Kwsfour" "eune"`
 
 <b>Available regions:</b> `eune`, `euw`, `na`
 
-### How to get app port & auth token
-
-* <b>Windows:</b>
-    1. Place `SimpleDebugger.exe` inside your League of Legends folder (where `LeagueClient.exe` is located).
-    2. Start SimpleDebugger and press `enter` to hook the client, then exit.
-    * Now each time you start your League Client, the SimpleDebugger process will pop up and show you useful info.
-
-* <b>macOS:</b>
-    * App port & auth token are now automatically in the script (using: `ps -A | grep LeagueClientUx`)
-
 # ToDo:
 
 * Re-work the script using an LCU driver so we don't have to manually grab the app port & auth token for each account.<br>
