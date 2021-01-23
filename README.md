@@ -10,7 +10,7 @@ I won't bother explaining every single step you have to take to make this script
 Apparently you can crash someone else's client by flooding it with invites.<br>
 The result is making the victim's client completely unresponsive.<br>
 This shit will literally not stop until you cancel the attack.<br>
-<b>Not affected</b> by the "allow invites only from friends" option (cuz why not?? riot?)
+<b>Not affected</b> by the "allow invites only from friends" option or when your accounts are blocked (cuz why not?? riot?)
 
 # Installation & Usage
 
