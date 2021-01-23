@@ -16,19 +16,36 @@ This shit will literally not stop until you cancel the attack.
 * <b>Windows:</b>
     * Run League of Legends with this argument: `--allow-multiple-clients`
 
-* <b>MacOS:</b>
-    * Use `open -n "run-league.app"` to start a new client (check `bin` folder).
+* <b>macOS:</b>
+    * Run `runleague.app` (see `bins` folder).
 
-The `run-league.app` is a simple AppleScript application used to send the `--allow-multiple-clients` argument
+## What is `runleague.app`
+The `runleague.app` is a simple AppleScript application used to send the `--allow-multiple-clients` argument
 to the client executable. You can compile your own using the following code:
 ```
-do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClient.app/Contents/MacOS/LeagueClient --allow-multiple-clients & killall League\\ of\\ Legends.app"
+do shell script "open -a /Applications/League\\ of\\ Legends.app --args --allow-multiple-clients"
 ```
+<b>Save it as an application</b>
+
+## Older verions of macOS
+
+For older versions of macOS, you might need to use this code instead:
+```
+do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClient.app/Contents/MacOS/LeagueClient --allow-multiple-clients & killall runleague.app"
+```
+Where `runleague.app` is whatever you have named the script + .app
 
 # Installation & Usage
 
 1. Install requirements with `pip install -r requirements.txt`
-2. You have to import your LeagueClient app port & auth token in `main.py` for each account you have logged into (see `auths` variable in `main.py`).
+2. Run `python MAINFILE.py "Summoner Name" "Region"`<br>
+Where `MAINFILE.py` is the main python file depending on your platform. For windows you should use `main_win.py`, and for macOS `main_mac.py`.
+
+For example: `python main_mac.py "Kwsfour" "eune"`
+
+<b>Available regions:</b> `eune`, `euw`, `na`
+
+<b><u>Please note:</u></b> You must open whatever number of clients you want <b>before</b> logging in to any account.
 
 ### How to get app port & auth token
 
@@ -37,9 +54,8 @@ do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClie
     2. Start SimpleDebugger and press `enter` to hook the client, then exit.
     * Now each time you start your League Client, the SimpleDebugger process will pop up and show you useful info.
 
-* <b>MacOS:</b>
-    * TODO: Create simple debugger for MacOS
-    * For now, use `ps -A | grep LeagueClientUx` to get app port & auth token
+* <b>macOS:</b>
+    * App port & auth token are now automatically in the script (using: `ps -A | grep LeagueClientUx`)
 
 # ToDo:
 
