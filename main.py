@@ -5,6 +5,7 @@ import json
 from time import sleep
 from selenium import webdriver
 from datetime import datetime
+import subprocess
 import psutil
 #from lcu_driver import Connector
 import threading
@@ -14,15 +15,40 @@ import base64
 
 # fill in with this format:
 # 'app_port': 'auth_token',
-auths = {
-    '60664': 'auth token 1', # account1
-    '60578': 'auth token 2', # account2
-    '60489': 'auth token 3', # account3
-}
+auths = {}
 
 # suppress warnings
 #requests.packages.urllib3.disable_warnings() 
 disable_warnings()
+
+def leagueClientsAvailable():
+    return 'LeagueClientUx.exe' in (p.name() for p in psutil.process_iter())
+
+'''def leagueClientAvailable1():
+    result = subprocess.Popen(['ps -A | grep LeagueClientUx'], shell=True, stdout=subprocess.PIPE)
+    readable = result.stdout.read().decode('utf-8')
+    if not ('--remoting-auth-token' in readable):
+        return False
+    return True'''
+
+def insertAuths():
+    if not leagueClientsAvailable():
+        print('No LeagueClientUx.exe found. Login to an account and try again. Exiting...')
+        sys.exit()
+
+    for p in psutil.process_iter():
+        if p.name() == 'LeagueClientUx.exe':
+            args = p.cmdline()
+
+            remoting_auth_token = None
+            app_port = None
+            for a in args:
+                if '--remoting-auth-token=' in a:
+                    remoting_auth_token = a.split('--remoting-auth-token=', 1)[1]
+                if '--app-port' in a:
+                    app_port = a.split('--app-port=', 1)[1]
+            
+            auths[app_port] = remoting_auth_token
 
 def spam(url, data, headers):
     # start flooding invitations
@@ -38,6 +64,9 @@ def main():
     if len(sys.argv) < 3:
         print('Usage: python main.py "Summoner Name" "Region"')
         sys.exit()
+
+    # get app port & auth token for each client
+    insertAuths()
 
     summoner_name = sys.argv[1]
     region = sys.argv[2]
@@ -80,6 +109,8 @@ def main():
 
     summoner_id = sid_element.get_attribute('data-summoner-id')
     summoner_name = driver.find_element_by_xpath('//span[@class="Name"]').text
+
+    driver.quit()
 
     print('Summoner Name: ' + summoner_name)
     print('Summoner ID: ' + summoner_id)
@@ -139,7 +170,7 @@ def findProcessIdByName(processName):
 
 #debugging
 def main1():
-    print(findProcessIdByName('SimpleDebugger'))
+    print(leagueClientsAvailable())
     sys.exit()
 
 if __name__ == '__main__':

@@ -33,7 +33,7 @@ def leagueClientsAvailable():
 
 def insertAuths():
     if not leagueClientsAvailable():
-        print('No LeagueClient found. Login to an account and try again. Exiting...')
+        print('No LeagueClientUx found. Login to an account and try again. Exiting...')
         sys.exit()
 
     result = subprocess.Popen(['ps -A | grep LeagueClientUx'], shell=True, stdout=subprocess.PIPE)
@@ -42,8 +42,8 @@ def insertAuths():
     for line in lines:
         l = line.decode('utf-8')
         if '--remoting-auth-token' in l:
-            remoting_auth_token = l.split('--remoting-auth-token=',1)[1].split(' ')[0]
-            app_port = l.split('--app-port=',1)[1].split(' ')[0]
+            remoting_auth_token = l.split('--remoting-auth-token=', 1)[1].split(' ')[0]
+            app_port = l.split('--app-port=', 1)[1].split(' ')[0]
             auths[app_port] = remoting_auth_token
 
 def spam(url, data, headers):
