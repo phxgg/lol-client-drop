@@ -49,7 +49,7 @@ When you login to any account you won't be able to start a new client.
 ### Usage
 
 * Run `python MAINFILE.py "Summoner Name" "Region"`<br>
-Where `MAINFILE.py` is the main python file depending on your platform. For windows you should use `main_win.py`, and for macOS `main_mac.py`.
+Where `MAINFILE.py` is the main python file depending on your platform. For windows you should use `main.py`, and for macOS `main_mac.py`.
 
 For example: `python main_mac.py "Kwsfour" "eune"`
 
