@@ -1,4 +1,5 @@
 info/
 .DS_Store
-test.py
 .vscode
+test.py
+main_mac.py

@@ -5,6 +5,7 @@ import json
 from time import sleep
 from selenium import webdriver
 from datetime import datetime
+import platform
 import subprocess
 import psutil
 import threading
@@ -13,20 +14,31 @@ import base64
 g_auths = {}
 g_regions = {}
 
+lcu_name = None
+
 # suppress warnings
 #requests.packages.urllib3.disable_warnings() 
 disable_warnings()
 
+def getLCUName():
+    global lcu_name
+    if platform.system() == 'Windows':
+        lcu_name = 'LeagueClientUx.exe'
+    elif platform.system() == 'Darwin':
+        lcu_name = 'LeagueClientUx'
+    elif platform.system() == 'Linux':
+        lcu_name = 'LeagueClientUx'
+
 def LCUAvailable():
-    return 'LeagueClientUx.exe' in (p.name() for p in psutil.process_iter())
+    return lcu_name in (p.name() for p in psutil.process_iter())
 
 def getLCUArguments():
     if not LCUAvailable():
-        print('No LeagueClientUx.exe found. Login to an account and try again.')
+        print('No ' + lcu_name + ' found. Login to an account and try again.')
         sys.exit()
 
     for p in psutil.process_iter():
-        if p.name() == 'LeagueClientUx.exe':
+        if p.name() == lcu_name:
             args = p.cmdline()
 
             remoting_auth_token = None
@@ -52,6 +64,9 @@ def spam(url, data, headers):
         #sleep(0.01)
 
 def main():
+    # get LeagueClient name
+    getLCUName()
+
     if len(sys.argv) < 3:
         print('Usage: python main.py "Summoner Name" "Region"')
         sys.exit()

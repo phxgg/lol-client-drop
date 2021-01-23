@@ -23,10 +23,9 @@ This shit will literally not stop until you cancel the attack.
 
 ### Usage
 
-* Run `python MAINFILE.py "Summoner Name" "Region"`<br>
-Where `MAINFILE.py` is the main python file depending on your platform. For windows you should use `main.py`, and for macOS `main_mac.py`.
+* Run `python main.py "Summoner Name" "Region"`<br>
 
-For example: `python main_mac.py "Kwsfour" "eune"`
+For example: `python main.py "Kwsfour" "eune"`
 
 <b>Available regions:</b> `eune`, `euw`, `na`
 
