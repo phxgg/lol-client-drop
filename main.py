@@ -52,8 +52,6 @@ def spam(url, data, headers):
         #sleep(0.01)
 
 def main():
-    # implement method to get app port & session token
-
     if len(sys.argv) < 3:
         print('Usage: python main.py "Summoner Name" "Region"')
         sys.exit()
