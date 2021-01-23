@@ -10,22 +10,19 @@ import psutil
 import threading
 import base64
 
-# TODO: use lcu_driver
-
-# fill in with this format:
-# 'app_port': 'auth_token',
-auths = {}
+g_auths = {}
+g_regions = {}
 
 # suppress warnings
 #requests.packages.urllib3.disable_warnings() 
 disable_warnings()
 
-def leagueClientsAvailable():
+def LCUAvailable():
     return 'LeagueClientUx.exe' in (p.name() for p in psutil.process_iter())
 
-def insertAuths():
-    if not leagueClientsAvailable():
-        print('No LeagueClientUx.exe found. Login to an account and try again. Exiting...')
+def getLCUArguments():
+    if not LCUAvailable():
+        print('No LeagueClientUx.exe found. Login to an account and try again.')
         sys.exit()
 
     for p in psutil.process_iter():
@@ -34,13 +31,17 @@ def insertAuths():
 
             remoting_auth_token = None
             app_port = None
+            region = None
             for a in args:
+                if '--region=' in a:
+                    region = a.split('--region=', 1)[1].lower()
                 if '--remoting-auth-token=' in a:
                     remoting_auth_token = a.split('--remoting-auth-token=', 1)[1]
                 if '--app-port' in a:
                     app_port = a.split('--app-port=', 1)[1]
             
-            auths[app_port] = remoting_auth_token
+            g_auths[app_port] = remoting_auth_token
+            g_regions[app_port] = region
 
 def spam(url, data, headers):
     # start flooding invitations
@@ -57,12 +58,13 @@ def main():
         print('Usage: python main.py "Summoner Name" "Region"')
         sys.exit()
 
-    # get app port & auth token for each client
-    insertAuths()
-
     summoner_name = sys.argv[1]
     region = sys.argv[2]
 
+    # get app port & auth token for each client
+    getLCUArguments()
+
+    # region validation
     if (not region == 'eune') and (not region == 'euw') and (not region == 'na'):
         print('Invalid region. Please use: eune / euw / na')
         sys.exit()
@@ -73,6 +75,18 @@ def main():
     elif region == 'na':
         gameServerRegion = 'NA1'
 
+    # check if user has clients connected to given region
+    flag = False
+    for x, y in g_regions.items():
+        if y == region:
+            flag = True
+            break
+
+    if not flag:
+        print('You are running 1 or more clients but there are no accounts connected on region: ' + region)
+        sys.exit()
+
+    # grab summoner info
     print('Loading ChromeDriver...')
 
     chrome_options = webdriver.ChromeOptions()
@@ -97,7 +111,12 @@ def main():
 
     driver.get(opgg_link)
 
-    sid_element = driver.find_element_by_xpath('//div[@class="GameListContainer"]')
+    try:
+        sid_element = driver.find_element_by_xpath('//div[@class="GameListContainer"]')
+    except:
+        print('Could not find summoner. Check summoner name and/or region.')
+        sys.exit()
+
 
     summoner_id = sid_element.get_attribute('data-summoner-id')
     summoner_name = driver.find_element_by_xpath('//span[@class="Name"]').text
@@ -108,32 +127,33 @@ def main():
     print('Summoner ID: ' + summoner_id)
 
     sleep(1)
+    
+    for app_port, auth_token in g_auths.items():
+        if g_regions[app_port] == region:
+            api = 'https://127.0.0.1:' + app_port
 
-    for app_port, auth_token in auths.items():
-        api = 'https://127.0.0.1:' + app_port
+            session_token = base64.b64encode(('riot:' + auth_token).encode('ascii')).decode('ascii')
 
-        session_token = base64.b64encode(('riot:' + auth_token).encode('ascii')).decode('ascii')
+            headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Basic ' + session_token
+            }
 
-        headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Basic ' + session_token
-        }
+            # actual script
+            post_lobby_url = api + '/lol-lobby/v2/lobby'
+            post_inv_url = api + '/lol-lobby/v2/lobby/invitations'
 
-        # actual script
-        post_lobby_url = api + '/lol-lobby/v2/lobby'
-        post_inv_url = api + '/lol-lobby/v2/lobby/invitations'
+            # text to one line cuz why not
+            post_lobby_data = '{"customGameLobby": {"configuration": {"gameMode": "CLASSIC","gameServerRegion": "' + gameServerRegion + '","gameTypeConfig": {"advancedLearningQuests": true,"allowTrades": true,"banMode": "string","banTimerDuration": 0,"battleBoost": true,"crossTeamChampionPool": true,"deathMatch": true,"doNotRemove": true,"duplicatePick": true,"exclusivePick": true,"gameModeOverride": "string","id": 0,"learningQuests": true,"mainPickTimerDuration": 0,"maxAllowableBans": 0,"name": "string","numPlayersPerTeamOverride": 0,"onboardCoopBeginner": true,"pickMode": "string","postPickTimerDuration": 0,"reroll": true,"teamChampionPool": true},"mapId": 11,"maxPlayerCount": 0,"mutators": {"advancedLearningQuests": true,"allowTrades": true,"banMode": "string","banTimerDuration": 0,"battleBoost": true,"crossTeamChampionPool": true,"deathMatch": true,"doNotRemove": true,"duplicatePick": true,"exclusivePick": true,"gameModeOverride": "string","id": 0,"learningQuests": true,"mainPickTimerDuration": 0,"maxAllowableBans": 0,"name": "string","numPlayersPerTeamOverride": 0,"onboardCoopBeginner": true,"pickMode": "string","postPickTimerDuration": 0,"reroll": true,"teamChampionPool": true},"spectatorPolicy": "NotAllowed","teamSize": 0,"tournamentGameMode": "string","tournamentPassbackDataPacket": "string","tournamentPassbackUrl": "string"},"gameId": 0,"lobbyName": "string","lobbyPassword": "string","practiceGameRewardsDisabledReasons": ["string"],"spectators": [{"autoFillEligible": true,"autoFillProtectedForPromos": true,"autoFillProtectedForSoloing": true,"autoFillProtectedForStreaking": true,"botChampionId": 0,"botDifficulty": "NONE","canInviteOthers": true,"excludedPositionPreference": "string","id": 0,"isBot": true,"isOwner": true,"isSpectator": true,"positionPreferences": {"firstPreference": "string","secondPreference": "string"},"showPositionExcluder": true,"summonerInternalName": "string"}],"teamOne": [{"autoFillEligible": true,"autoFillProtectedForPromos": true,"autoFillProtectedForSoloing": true,"autoFillProtectedForStreaking": true,"botChampionId": 0,"botDifficulty": "NONE","canInviteOthers": true,"excludedPositionPreference": "string","id": 0,"isBot": true,"isOwner": true,"isSpectator": true,"positionPreferences": {"firstPreference": "string","secondPreference": "string"},"showPositionExcluder": true,"summonerInternalName": "string"}],"teamTwo": [{"autoFillEligible": true,"autoFillProtectedForPromos": true,"autoFillProtectedForSoloing": true,"autoFillProtectedForStreaking": true,"botChampionId": 0,"botDifficulty": "NONE","canInviteOthers": true,"excludedPositionPreference": "string","id": 0,"isBot": true,"isOwner": true,"isSpectator": true,"positionPreferences": {"firstPreference": "string","secondPreference": "string"},"showPositionExcluder": true,"summonerInternalName": "string"}]},"gameCustomization": {},"isCustom": false,"queueId": 830}'
+            post_inv_data = '[{"invitationId": "", "state": "Requested", "timestamp": "", "toSummonerId": ' + summoner_id + ', "toSummonerName": "' + summoner_name + '"}]'
 
-        # text to one line
-        post_lobby_data = '{"customGameLobby": {"configuration": {"gameMode": "CLASSIC","gameServerRegion": "' + gameServerRegion + '","gameTypeConfig": {"advancedLearningQuests": true,"allowTrades": true,"banMode": "string","banTimerDuration": 0,"battleBoost": true,"crossTeamChampionPool": true,"deathMatch": true,"doNotRemove": true,"duplicatePick": true,"exclusivePick": true,"gameModeOverride": "string","id": 0,"learningQuests": true,"mainPickTimerDuration": 0,"maxAllowableBans": 0,"name": "string","numPlayersPerTeamOverride": 0,"onboardCoopBeginner": true,"pickMode": "string","postPickTimerDuration": 0,"reroll": true,"teamChampionPool": true},"mapId": 11,"maxPlayerCount": 0,"mutators": {"advancedLearningQuests": true,"allowTrades": true,"banMode": "string","banTimerDuration": 0,"battleBoost": true,"crossTeamChampionPool": true,"deathMatch": true,"doNotRemove": true,"duplicatePick": true,"exclusivePick": true,"gameModeOverride": "string","id": 0,"learningQuests": true,"mainPickTimerDuration": 0,"maxAllowableBans": 0,"name": "string","numPlayersPerTeamOverride": 0,"onboardCoopBeginner": true,"pickMode": "string","postPickTimerDuration": 0,"reroll": true,"teamChampionPool": true},"spectatorPolicy": "NotAllowed","teamSize": 0,"tournamentGameMode": "string","tournamentPassbackDataPacket": "string","tournamentPassbackUrl": "string"},"gameId": 0,"lobbyName": "string","lobbyPassword": "string","practiceGameRewardsDisabledReasons": ["string"],"spectators": [{"autoFillEligible": true,"autoFillProtectedForPromos": true,"autoFillProtectedForSoloing": true,"autoFillProtectedForStreaking": true,"botChampionId": 0,"botDifficulty": "NONE","canInviteOthers": true,"excludedPositionPreference": "string","id": 0,"isBot": true,"isOwner": true,"isSpectator": true,"positionPreferences": {"firstPreference": "string","secondPreference": "string"},"showPositionExcluder": true,"summonerInternalName": "string"}],"teamOne": [{"autoFillEligible": true,"autoFillProtectedForPromos": true,"autoFillProtectedForSoloing": true,"autoFillProtectedForStreaking": true,"botChampionId": 0,"botDifficulty": "NONE","canInviteOthers": true,"excludedPositionPreference": "string","id": 0,"isBot": true,"isOwner": true,"isSpectator": true,"positionPreferences": {"firstPreference": "string","secondPreference": "string"},"showPositionExcluder": true,"summonerInternalName": "string"}],"teamTwo": [{"autoFillEligible": true,"autoFillProtectedForPromos": true,"autoFillProtectedForSoloing": true,"autoFillProtectedForStreaking": true,"botChampionId": 0,"botDifficulty": "NONE","canInviteOthers": true,"excludedPositionPreference": "string","id": 0,"isBot": true,"isOwner": true,"isSpectator": true,"positionPreferences": {"firstPreference": "string","secondPreference": "string"},"showPositionExcluder": true,"summonerInternalName": "string"}]},"gameCustomization": {},"isCustom": false,"queueId": 830}'
-        post_inv_data = '[{"invitationId": "", "state": "Requested", "timestamp": "", "toSummonerId": ' + summoner_id + ', "toSummonerName": "' + summoner_name + '"}]'
+            # create lobby
+            r = requests.post(post_lobby_url, data=post_lobby_data, headers=headers, verify=False)
 
-        # create lobby
-        r = requests.post(post_lobby_url, data=post_lobby_data, headers=headers, verify=False)
-
-        thr = threading.Thread(target=spam, args=(post_inv_url, post_inv_data, headers,))
-        thr.daemon = True # make thread daemon so it kills when we exit script
-        thr.start()
+            thr = threading.Thread(target=spam, args=(post_inv_url, post_inv_data, headers,))
+            thr.daemon = True # make thread daemon so it kills when we exit script
+            thr.start()
 
     # keep main thread alive
     try:
