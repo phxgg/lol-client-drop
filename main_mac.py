@@ -7,7 +7,6 @@ from selenium import webdriver
 from datetime import datetime
 import subprocess
 import psutil
-#from lcu_driver import Connector
 import threading
 import base64
 

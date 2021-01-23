@@ -1,4 +1,4 @@
-lcu_driver==2.1.2
+urllib3==1.25.11
 psutil==5.7.3
-requests==2.24.0
 selenium==3.141.0
+requests==2.24.0
