@@ -20,6 +20,12 @@ lcu_name = None
 #requests.packages.urllib3.disable_warnings() 
 disable_warnings()
 
+# do not send invites from these clients
+whitelist = [
+    'x',
+    'x',
+]
+
 def getLCUName():
     global lcu_name
     if platform.system() == 'Windows':
@@ -154,15 +160,24 @@ def main():
                 'Authorization': 'Basic ' + session_token
             }
 
-            # actual script
+            # api urls
+            get_cur_summoner = api + '/lol-summoner/v1/current-summoner'
             post_lobby_url = api + '/lol-lobby/v2/lobby'
             post_inv_url = api + '/lol-lobby/v2/lobby/invitations'
+
+            # whitelist
+            r = requests.get(get_cur_summoner, headers=headers, verify=False)
+            r = json.loads(r.text)
+            is_whitelist = r['displayName'] in whitelist
+
+            if is_whitelist:
+                continue
+
+            print('Connected: ' + r['displayName'])
 
             # text to one line cuz why not
             post_lobby_data = '{"customGameLobby": {"configuration": {"gameMode": "CLASSIC","gameServerRegion": "' + gameServerRegion + '","gameTypeConfig": {"advancedLearningQuests": true,"allowTrades": true,"banMode": "string","banTimerDuration": 0,"battleBoost": true,"crossTeamChampionPool": true,"deathMatch": true,"doNotRemove": true,"duplicatePick": true,"exclusivePick": true,"gameModeOverride": "string","id": 0,"learningQuests": true,"mainPickTimerDuration": 0,"maxAllowableBans": 0,"name": "string","numPlayersPerTeamOverride": 0,"onboardCoopBeginner": true,"pickMode": "string","postPickTimerDuration": 0,"reroll": true,"teamChampionPool": true},"mapId": 11,"maxPlayerCount": 0,"mutators": {"advancedLearningQuests": true,"allowTrades": true,"banMode": "string","banTimerDuration": 0,"battleBoost": true,"crossTeamChampionPool": true,"deathMatch": true,"doNotRemove": true,"duplicatePick": true,"exclusivePick": true,"gameModeOverride": "string","id": 0,"learningQuests": true,"mainPickTimerDuration": 0,"maxAllowableBans": 0,"name": "string","numPlayersPerTeamOverride": 0,"onboardCoopBeginner": true,"pickMode": "string","postPickTimerDuration": 0,"reroll": true,"teamChampionPool": true},"spectatorPolicy": "NotAllowed","teamSize": 0,"tournamentGameMode": "string","tournamentPassbackDataPacket": "string","tournamentPassbackUrl": "string"},"gameId": 0,"lobbyName": "string","lobbyPassword": "string","practiceGameRewardsDisabledReasons": ["string"],"spectators": [{"autoFillEligible": true,"autoFillProtectedForPromos": true,"autoFillProtectedForSoloing": true,"autoFillProtectedForStreaking": true,"botChampionId": 0,"botDifficulty": "NONE","canInviteOthers": true,"excludedPositionPreference": "string","id": 0,"isBot": true,"isOwner": true,"isSpectator": true,"positionPreferences": {"firstPreference": "string","secondPreference": "string"},"showPositionExcluder": true,"summonerInternalName": "string"}],"teamOne": [{"autoFillEligible": true,"autoFillProtectedForPromos": true,"autoFillProtectedForSoloing": true,"autoFillProtectedForStreaking": true,"botChampionId": 0,"botDifficulty": "NONE","canInviteOthers": true,"excludedPositionPreference": "string","id": 0,"isBot": true,"isOwner": true,"isSpectator": true,"positionPreferences": {"firstPreference": "string","secondPreference": "string"},"showPositionExcluder": true,"summonerInternalName": "string"}],"teamTwo": [{"autoFillEligible": true,"autoFillProtectedForPromos": true,"autoFillProtectedForSoloing": true,"autoFillProtectedForStreaking": true,"botChampionId": 0,"botDifficulty": "NONE","canInviteOthers": true,"excludedPositionPreference": "string","id": 0,"isBot": true,"isOwner": true,"isSpectator": true,"positionPreferences": {"firstPreference": "string","secondPreference": "string"},"showPositionExcluder": true,"summonerInternalName": "string"}]},"gameCustomization": {},"isCustom": false,"queueId": 830}'
             post_inv_data = '[{"invitationId": "", "state": "Requested", "timestamp": "", "toSummonerId": ' + summoner_id + ', "toSummonerName": "' + summoner_name + '"}]'
-
-            print(post_inv_data)
 
             # create lobby
             r = requests.post(post_lobby_url, data=post_lobby_data, headers=headers, verify=False)
@@ -170,6 +185,8 @@ def main():
             thr = threading.Thread(target=spam, args=(post_inv_url, post_inv_data, headers,))
             thr.daemon = True # make thread daemon so it kills when we exit script
             thr.start()
+    
+    print('Loaded all non-whitelisted accounts. If you keep seeing this message, it means that you have 0 non-whitelisted accounts.')
 
     # keep main thread alive
     try:
