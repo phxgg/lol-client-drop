@@ -1,3 +1,6 @@
+# pylint: disable=unused-variable
+# pylint: enable=too-many-lines
+
 import sys
 import requests
 from urllib3 import disable_warnings
@@ -40,8 +43,7 @@ def LCUAvailable():
 
 def getLCUArguments():
     if not LCUAvailable():
-        print('No ' + lcu_name + ' found. Login to an account and try again.')
-        sys.exit()
+        sys.exit('No ' + lcu_name + ' found. Login to an account and try again.')
 
     for p in psutil.process_iter():
         if p.name() == lcu_name:
@@ -74,8 +76,7 @@ def main():
     getLCUName()
 
     if len(sys.argv) < 3:
-        print('Usage: python main.py "Summoner Name" "Region"')
-        sys.exit()
+        sys.exit('Usage: python main.py "Summoner Name" "Region"')
 
     summoner_name = sys.argv[1]
     region = sys.argv[2]
@@ -85,8 +86,7 @@ def main():
 
     # region validation
     if (not region == 'eune') and (not region == 'euw') and (not region == 'na'):
-        print('Invalid region. Please use: eune / euw / na')
-        sys.exit()
+        sys.exit('Invalid region. Please use: eune / euw / na')
 
     gameServerRegion = 'EUN1'
     if region == 'euw':
@@ -102,8 +102,7 @@ def main():
             break
 
     if not flag:
-        print('You are running 1 or more clients but there are no accounts connected on region: ' + region)
-        sys.exit()
+        sys.exit('You are running 1 or more clients but there are no accounts connected on region: ' + region)
 
     # grab summoner info
     print('Loading ChromeDriver...')
@@ -129,17 +128,42 @@ def main():
     print('Grabbing Summoner Name & ID...')
 
     driver.get(opgg_link)
+    sleep(1)
 
+    # click "AGREE" on cookies message
+    try:
+        driver.find_element_by_xpath('//button[contains(text(), "AGREE")]').click()
+        sleep(1)
+    except:
+        driver.quit()
+        sys.exit('Could not go through the cookies message.')
+
+    # find summoner
     try:
         sid_element = driver.find_element_by_xpath('//div[@class="GameListContainer"]')
     except:
-        print('Could not find summoner. Check summoner name and/or region.')
-        sys.exit()
-
+        driver.quit()
+        sys.exit('Could not find summoner. Check summoner name and/or region.')
 
     summoner_id = sid_element.get_attribute('data-summoner-id')
     summoner_name = driver.find_element_by_xpath('//span[@class="Name"]').text
     summoner_name = summoner_name.encode('utf-8').decode('utf-8')
+
+    # if he's in Live Game, wait for it to finish
+    while True:
+        try:
+            driver.find_element_by_xpath('//span[contains(text(), "Live Game")]').click()
+            sleep(3)
+
+            try:
+                spectator = driver.find_element_by_xpath('//div[@class="SpectatorError"]')
+                break
+            except:
+                print('[' + datetime.now().strftime('%H:%M:%S') + '] Player is in live game. Refreshing in 5 seconds...')
+                sleep(2)
+        except:
+            driver.quit()
+            sys.exit('somethng broke')
 
     driver.quit()
 
