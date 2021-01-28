@@ -1,4 +1,6 @@
 info/
+dist/
+build/
 .DS_Store
 .vscode
 test.py
