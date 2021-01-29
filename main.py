@@ -117,11 +117,16 @@ def main():
     # get LeagueClient name
     getLCUName()
 
+    '''
     if len(sys.argv) < 3:
         sys.exit('Usage: python main.py "Summoner Name" "Region"')
 
     summoner_name = sys.argv[1]
     region = sys.argv[2]
+    '''
+
+    summoner_name = str(input("Summoner Name: "))
+    region = str(input("Region: "))
 
     # get app port & auth token for each client
     getLCUArguments()
