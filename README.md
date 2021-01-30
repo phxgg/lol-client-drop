@@ -1,9 +1,6 @@
 # lol-client-drop #
 
-*Under construction*
-
-This is referring to people who know what they're doing.
-I won't bother explaining every single step you have to take to make this script work.
+*Will keep updating this until it eventually gets patched.*
 
 # What this is
 
@@ -15,7 +12,6 @@ This shit will literally not stop until you cancel the attack.<br>
 # Installation & Usage
 
 ### Setup
-
 1. Install python 3.8 or later: https://www.python.org/
 2. Install requirements with `pip install -r requirements.txt`
 3. Summoner data is grabbed using Chrome, so download `chromedriver` and add it to your PATH: https://chromedriver.chromium.org/
@@ -23,12 +19,14 @@ This shit will literally not stop until you cancel the attack.<br>
 5. Skip the tutorial on each one of your accounts, so when you login you can see the client home page.
 
 ### Usage
+Run one of the following:
 
-* Run `python main.py "Summoner Name" "Region"`<br>
-
-For example: `python main.py "Kwsfour" "eune"`
+* `python main.py "Summoner Name" "Region"`
+* or `python main.py` and provide the summoner name & region when asked.
 
 <b>Available regions:</b> `eune`, `euw`, `na`
+
+The script has been tested running 6 hours straight without problems.
 
 # Run multiple clients
 
@@ -47,7 +45,6 @@ do shell script "open -a /Applications/League\\ of\\ Legends.app --args --allow-
 <b>Save it as an application</b>
 
 ### Older verions of macOS
-
 For older versions of macOS, you might need to use this code instead:
 ```
 do shell script "/Applications/League\\ of\\ Legends.app/Contents/LoL/LeagueClient.app/Contents/MacOS/LeagueClient --allow-multiple-clients & killall runleague.app"
@@ -56,6 +53,10 @@ Where `runleague.app` is whatever you have named the script + .app
 
 <b><u>Please note:</u></b> For macOS users, you must open whatever number of clients you want <b>before</b> logging in to any account.
 When you login to any account you won't be able to start a new client.
+
+# ToDo:
+
+* The script right now is kinda heavy when running. Top priority is to make it run smoothly.
 
 # Disclaimer
 

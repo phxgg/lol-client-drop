@@ -53,8 +53,6 @@ def getWhitelist():
         with open('./whitelist.txt', 'w') as f:
             f.close()
 
-    print(whitelist)
-
 def LCUAvailable():
     '''
     Check whether a client is available.
@@ -125,25 +123,13 @@ def spam(url, data, headers):
             sleep(2)
 
 def main():
-    # get LeagueClient name
-    getLCUName()
-
-    # get whitelisted accounts
-    getWhitelist()
-
-    '''
+    # get summoner name & region of victim
     if len(sys.argv) < 3:
-        sys.exit('Usage: python main.py "Summoner Name" "Region"')
-
-    summoner_name = sys.argv[1]
-    region = sys.argv[2]
-    '''
-
-    summoner_name = str(input("Summoner Name: "))
-    region = str(input("Region: "))
-
-    # get app port & auth token for each client
-    getLCUArguments()
+        summoner_name = str(input("Summoner Name: "))
+        region = str(input("Region: "))
+    else:
+        summoner_name = sys.argv[1]
+        region = sys.argv[2]
 
     # region validation
     if (not region == 'eune') and (not region == 'euw') and (not region == 'na'):
@@ -154,6 +140,15 @@ def main():
         gameServerRegion = 'EUW1'
     elif region == 'na':
         gameServerRegion = 'NA1'
+
+    # get LeagueClient name
+    getLCUName()
+
+    # get whitelisted accounts
+    getWhitelist()
+
+    # get app port & auth token for each client
+    getLCUArguments()
 
     # check if user has clients connected to given region
     flag = False
