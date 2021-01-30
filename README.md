@@ -1,6 +1,6 @@
 # lol-client-drop #
 
-*Will keep updating this until it eventually gets patched.*
+**UPDATE:** Since this is semi-fixed, I'm making the code public.
 
 # What this is
 
