@@ -14,7 +14,8 @@ This shit will literally not stop until you cancel the attack.<br>
 ### Setup
 1. Install python 3.8 or later: https://www.python.org/
 2. Install requirements with `pip install -r requirements.txt`
-3. Summoner data is grabbed using Chrome, so download `chromedriver` and add it to your PATH: https://chromedriver.chromium.org/
+3. Summoner data is grabbed from opgg using Chrome, so download `chromedriver` and add it to your PATH: https://chromedriver.chromium.org/<br>
+(ye i did not even see there was an actual API to grab summoner data from client so i didnt even bother changing the code lol)
 4. Create accounts on the same region as your victim (3 accounts should be quite powerful).
 5. Skip the tutorial on each one of your accounts, so when you login you can see the client home page.
 
