@@ -18,13 +18,8 @@ import base64
 #requests.packages.urllib3.disable_warnings() 
 disable_warnings()
 
-# do not send invites from these clients
-whitelist = [
-    'x',
-    'x',
-]
-
 # global variables
+whitelist = []
 g_auths = {}
 g_regions = {}
 
@@ -43,6 +38,22 @@ def getLCUName():
         lcu_name = 'LeagueClientUx'
     elif platform.system() == 'Linux':
         lcu_name = 'LeagueClientUx'
+
+def getWhitelist():
+    '''
+    Get summoner names listed in whitelist.txt
+    These accounts will not be spamming invites to the victim,
+    even if they are logged in the client.
+    '''
+    try:
+        with open('./whitelist.txt', 'r') as f:
+            for line in f.read().splitlines():
+                whitelist.append(line)
+    except IOError:
+        with open('./whitelist.txt', 'w') as f:
+            f.close()
+
+    print(whitelist)
 
 def LCUAvailable():
     '''
@@ -116,6 +127,9 @@ def spam(url, data, headers):
 def main():
     # get LeagueClient name
     getLCUName()
+
+    # get whitelisted accounts
+    getWhitelist()
 
     '''
     if len(sys.argv) < 3:

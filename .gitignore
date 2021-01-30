@@ -5,3 +5,4 @@ build/
 .vscode
 test.py
 main_mac.py
+whitelist.txt
