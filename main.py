@@ -168,7 +168,8 @@ def main():
     chrome_options.add_argument('--start-maximized') # works on Windows
     chrome_options.add_argument('--start-fullscreen') # works on Mac
     chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36')
+    chrome_options.add_argument('--lang=en-US')
+    chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--mute-audio')
     chrome_options.add_argument('--disable-dev-shm-usage')
