@@ -12,7 +12,7 @@ This shit will literally not stop until you cancel the attack.<br>
 # Installation & Usage
 
 ### Setup
-1. Install python 3.8 or later: https://www.python.org/
+1. Install python 3.12.0 or later: https://www.python.org/
 2. Install requirements with `python -m pip install -r requirements.txt`
 3. Summoner data is grabbed using Chrome, so download `chromedriver` and add it to your PATH: https://chromedriver.chromium.org/<br>
 (ye i did not even see there was an actual API to grab summoner data from client so i didnt even bother changing the code lol)
@@ -22,8 +22,8 @@ This shit will literally not stop until you cancel the attack.<br>
 ### Usage
 Run one of the following:
 
-* `python main.py "Summoner Name" "Region"`
-* or `python main.py` and provide the summoner name & region when asked.
+* `python main.py "Game Name" "Tag Line" "Region"`
+* or `python main.py` and provide the game name, tag line & region when asked.
 
 <b>Available regions:</b> `eune`, `euw`, `na`
 
