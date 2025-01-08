@@ -1,6 +1,6 @@
 urllib3>=1.26.5
 requests==2.25.1
 psutil==5.7.3
-selenium==3.141.0
+selenium==4.15.2
 pyarmor==6.6.0
-pyinstaller==4.2
+pyinstaller==6.2.0
